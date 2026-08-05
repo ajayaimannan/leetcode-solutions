@@ -1,0 +1,17 @@
+# Problem: Group Anagrams
+# Language: Python
+# Timestamp: "2026-02-07 10:20:01"
+
+class Solution(object):
+    def groupAnagrams(self, strs):
+        map=defaultdict(list)
+        for word in strs:
+            key = tuple(sorted(word))
+            map[key].append(word)
+        return map.values()
+
+        """
+        :type strs: List[str]
+        :rtype: List[List[str]]
+        """
+        

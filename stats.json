@@ -1,36 +1,37 @@
 {
   "status": "success",
-  "last_updated": "2026-08-05T09:24:28.805397Z",
-  "total_solved": 10,
+  "last_updated": "2026-08-05T09:35:10.572281Z",
+  "total_solved": 19,
   "languages": {
     "leet": 1,
-    "Python": 9
+    "Python": 17,
+    "Java": 1
   },
   "recent_solutions": [
-    {
-      "title": "test",
-      "language": "Python",
-      "file": "Python/test.py"
-    },
-    {
-      "title": "L217-duplicates",
-      "language": "Python",
-      "file": "Python/L217-duplicates.py"
-    },
-    {
-      "title": "L20-validparenthesis",
-      "language": "Python",
-      "file": "Python/L20-validparenthesis.py"
-    },
-    {
-      "title": "L242-valid anagram",
-      "language": "Python",
-      "file": "Python/L242-valid_anagram.py"
-    },
     {
       "title": "L342-Powerof4",
       "language": "Python",
       "file": "Python/L342-Powerof4.py"
+    },
+    {
+      "title": "Power of Four",
+      "language": "Python",
+      "file": "Python/Power_of_Four.py"
+    },
+    {
+      "title": "Contains Duplicate",
+      "language": "Python",
+      "file": "Python/Contains_Duplicate.py"
+    },
+    {
+      "title": "Valid Anagram",
+      "language": "Python",
+      "file": "Python/Valid_Anagram.py"
+    },
+    {
+      "title": "Add Two Integers",
+      "language": "Java",
+      "file": "Java/Add_Two_Integers.java"
     }
   ]
 }
