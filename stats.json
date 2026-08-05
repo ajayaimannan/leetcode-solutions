@@ -1,18 +1,14 @@
 {
   "status": "success",
-  "last_updated": "2026-08-05T09:48:16.140624Z",
-  "total_solved": 10,
+  "last_updated": "2026-08-05T10:02:55.011210Z",
+  "total_solved": 11,
   "languages": {
     "leet": 1,
     "Python": 8,
-    "Java": 1
+    "Java": 1,
+    "Kotlin": 1
   },
   "recent_solutions": [
-    {
-      "title": "0002 Add Two Numbers",
-      "language": "Python",
-      "file": "Python/0002_Add_Two_Numbers.py"
-    },
     {
       "title": "0049 Group Anagrams",
       "language": "Python",
@@ -32,6 +28,11 @@
       "title": "2235 Add Two Integers",
       "language": "Java",
       "file": "Java/2235_Add_Two_Integers.java"
+    },
+    {
+      "title": "2235 Add Two Integers",
+      "language": "Kotlin",
+      "file": "Kotlin/2235_Add_Two_Integers.kt"
     }
   ]
 }
