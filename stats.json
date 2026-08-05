@@ -1,0 +1,36 @@
+{
+  "status": "success",
+  "last_updated": "2026-08-05T09:24:28.805397Z",
+  "total_solved": 10,
+  "languages": {
+    "leet": 1,
+    "Python": 9
+  },
+  "recent_solutions": [
+    {
+      "title": "test",
+      "language": "Python",
+      "file": "Python/test.py"
+    },
+    {
+      "title": "L217-duplicates",
+      "language": "Python",
+      "file": "Python/L217-duplicates.py"
+    },
+    {
+      "title": "L20-validparenthesis",
+      "language": "Python",
+      "file": "Python/L20-validparenthesis.py"
+    },
+    {
+      "title": "L242-valid anagram",
+      "language": "Python",
+      "file": "Python/L242-valid_anagram.py"
+    },
+    {
+      "title": "L342-Powerof4",
+      "language": "Python",
+      "file": "Python/L342-Powerof4.py"
+    }
+  ]
+}
