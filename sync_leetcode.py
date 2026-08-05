@@ -1,10 +1,18 @@
 import os
+import sys
+import json
+import argparse
 import requests
 import datetime
 import re
+import random
 
+# Secrets & Environment Variables
 SESSION = os.environ.get('LEETCODE_SESSION')
 CSRF = os.environ.get('LEETCODE_CSRF')
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+LAZYRAION_WEBHOOK = os.environ.get('LAZYRAION_WEBHOOK_URL') # e.g. https://api.yourdomain.com/leetcode/update
 
 HEADERS = {
     'Cookie': f'LEETCODE_SESSION={SESSION}; csrftoken={CSRF};',
@@ -15,15 +23,18 @@ HEADERS = {
 
 URL = 'https://leetcode.com/graphql'
 
-# Map LeetCode language slugs to file extensions and comment syntaxes
 LANG_MAP = {
-    'java': {'ext': '.java', 'comment': '//'},
-    'python3': {'ext': '.py', 'comment': '#'},
-    'python': {'ext': '.py', 'comment': '#'},
-    'cpp': {'ext': '.cpp', 'comment': '//'},
-    'c': {'ext': '.c', 'comment': '//'},
-    'javascript': {'ext': '.js', 'comment': '//'}
+    'java': {'ext': '.java', 'comment': '//', 'folder': 'Java'},
+    'python3': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'python': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'cpp': {'ext': '.cpp', 'comment': '//', 'folder': 'Cpp'},
+    'c': {'ext': '.c', 'comment': '//', 'folder': 'C'},
+    'javascript': {'ext': '.js', 'comment': '//', 'folder': 'JavaScript'}
 }
+
+def format_filename(title):
+    clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
+    return clean_title.replace(' ', '_')
 
 def get_recent_submissions():
     query = """
@@ -37,8 +48,12 @@ def get_recent_submissions():
       }
     }
     """
-    response = requests.post(URL, json={'query': query, 'variables': {'limit': 20}}, headers=HEADERS)
-    return response.json().get('data', {}).get('recentAcSubmissionList', [])
+    try:
+        response = requests.post(URL, json={'query': query, 'variables': {'limit': 20}}, headers=HEADERS, timeout=15)
+        return response.json().get('data', {}).get('recentAcSubmissionList', [])
+    except Exception as e:
+        print(f"Error fetching submissions: {e}")
+        return []
 
 def get_submission_code(sub_id):
     query = """
@@ -48,17 +63,65 @@ def get_submission_code(sub_id):
       }
     }
     """
-    response = requests.post(URL, json={'query': query, 'variables': {'id': sub_id}}, headers=HEADERS)
-    return response.json().get('data', {}).get('submissionDetails', {}).get('code', '')
+    try:
+        response = requests.post(URL, json={'query': query, 'variables': {'id': sub_id}}, headers=HEADERS, timeout=15)
+        return response.json().get('data', {}).get('submissionDetails', {}).get('code', '')
+    except Exception as e:
+        print(f"Error fetching code for {sub_id}: {e}")
+        return ''
 
-def format_filename(title):
-    # Removes special characters and replaces spaces with underscores
-    clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
-    return clean_title.replace(' ', '_')
+def generate_stats_file():
+    """Generates stats.json for lazyraion-api to consume."""
+    language_breakdown = {}
+    total_files = 0
+    recent_files = []
 
-def main():
+    for item in os.listdir('.'):
+        if os.path.isdir(item) and not item.startswith('.'):
+            files = [f for f in os.listdir(item) if os.path.isfile(os.path.join(item, f))]
+            if files:
+                language_breakdown[item] = len(files)
+                total_files += len(files)
+                for f in files:
+                    recent_files.append({"title": f.rsplit('.', 1)[0].replace('_', ' '), "language": item, "file": f"{item}/{f}"})
+
+    stats_payload = {
+        "status": "success",
+        "last_updated": datetime.datetime.utcnow().isoformat() + "Z",
+        "total_solved": total_files,
+        "languages": language_breakdown,
+        "recent_solutions": recent_files[-5:]  # Last 5 solutions
+    }
+
+    with open('stats.json', 'w') as f:
+        json.dump(stats_payload, f, indent=2)
+
+    return stats_payload
+
+def notify_lazyraion_api(payload):
+    """Safely notifies lazyraion-api if server is online. Fails silently if server is down."""
+    if not LAZYRAION_WEBHOOK:
+        return
+    try:
+        requests.post(LAZYRAION_WEBHOOK, json=payload, timeout=5)
+        print("Successfully notified lazyraion-api.")
+    except Exception as e:
+        print(f"lazyraion-api server currently unreachable. Continuing without error: {e}")
+
+def send_telegram(text):
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "Markdown"}
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        print(f"Telegram notification failed: {e}")
+
+def mode_sync():
     submissions = get_recent_submissions()
-    
+    new_syncs = 0
+
     for sub in submissions:
         lang_slug = sub['lang']
         if lang_slug not in LANG_MAP:
@@ -66,35 +129,216 @@ def main():
             
         lang_info = LANG_MAP[lang_slug]
         code = get_submission_code(sub['id'])
-        
         if not code:
             continue
 
-        # Format Timestamp
         dt = datetime.datetime.fromtimestamp(int(sub['timestamp']))
         timestamp_str = dt.strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Inject timestamp in quotes
-        comment_prefix = lang_info['comment']
-        injected_code = f'{comment_prefix} Timestamp: "{timestamp_str}"\n\n{code}'
-        
-        # Create Directory based on Language (e.g., "Java")
-        folder_name = lang_slug.capitalize()
-        if not os.path.exists(folder_name):
-            os.makedirs(folder_name)
-            
-        # Format File Name (e.g., Java/Two_Sum.java)
+
+        folder_name = lang_info['folder']
         file_name = f"{format_filename(sub['title'])}{lang_info['ext']}"
         file_path = os.path.join(folder_name, file_name)
-        
-        # Skip if file already exists to avoid unnecessary commits
+
         if os.path.exists(file_path):
             continue
-            
+
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
+        comment = lang_info['comment']
+        header = f"{comment} Problem: {sub['title']}\n{comment} Language: {folder_name}\n{comment} Timestamp: \"{timestamp_str}\"\n\n"
+        
         with open(file_path, 'w') as f:
-            f.write(injected_code)
-        print(f"Saved: {file_path}")
+            f.write(header + code)
+            
+        new_syncs += 1
 
-if __name__ == "__main__":
-    main()
+    stats_data = generate_stats_file()
+    notify_lazyraion_api(stats_data)
 
+    if new_syncs > 0:
+        msg = f"⚡ *LeetCode Sync Complete*\n\nAdded `{new_syncs}` new solutions.\nTotal Solved: `{stats_data['total_solved']}`"
+        send_telegram(msg)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode', choices=['sync', 'stats'], default='sync')
+    args = parser.parse_args()
+
+    if args.mode == 'sync':
+        mode_sync()
+    else:
+        stats = generate_stats_file()
+        send_telegram(f"📊 *Current Stats*\nTotal Solved: `{stats['total_solved']}`")
+import os
+import sys
+import json
+import argparse
+import requests
+import datetime
+import re
+import random
+
+# Secrets & Environment Variables
+SESSION = os.environ.get('LEETCODE_SESSION')
+CSRF = os.environ.get('LEETCODE_CSRF')
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
+LAZYRAION_WEBHOOK = os.environ.get('LAZYRAION_WEBHOOK_URL') # e.g. https://api.yourdomain.com/leetcode/update
+
+HEADERS = {
+    'Cookie': f'LEETCODE_SESSION={SESSION}; csrftoken={CSRF};',
+    'x-csrftoken': CSRF,
+    'Content-Type': 'application/json',
+    'Referer': 'https://leetcode.com'
+}
+
+URL = 'https://leetcode.com/graphql'
+
+LANG_MAP = {
+    'java': {'ext': '.java', 'comment': '//', 'folder': 'Java'},
+    'python3': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'python': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'cpp': {'ext': '.cpp', 'comment': '//', 'folder': 'Cpp'},
+    'c': {'ext': '.c', 'comment': '//', 'folder': 'C'},
+    'javascript': {'ext': '.js', 'comment': '//', 'folder': 'JavaScript'}
+}
+
+def format_filename(title):
+    clean_title = re.sub(r'[^a-zA-Z0-9\s]', '', title)
+    return clean_title.replace(' ', '_')
+
+def get_recent_submissions():
+    query = """
+    query GetRecentSubmissions($limit: Int!) {
+      recentAcSubmissionList(username: "", limit: $limit) {
+        id
+        title
+        titleSlug
+        timestamp
+        lang
+      }
+    }
+    """
+    try:
+        response = requests.post(URL, json={'query': query, 'variables': {'limit': 20}}, headers=HEADERS, timeout=15)
+        return response.json().get('data', {}).get('recentAcSubmissionList', [])
+    except Exception as e:
+        print(f"Error fetching submissions: {e}")
+        return []
+
+def get_submission_code(sub_id):
+    query = """
+    query submissionDetails($id: Int!) {
+      submissionDetails(submissionId: $id) {
+        code
+      }
+    }
+    """
+    try:
+        response = requests.post(URL, json={'query': query, 'variables': {'id': sub_id}}, headers=HEADERS, timeout=15)
+        return response.json().get('data', {}).get('submissionDetails', {}).get('code', '')
+    except Exception as e:
+        print(f"Error fetching code for {sub_id}: {e}")
+        return ''
+
+def generate_stats_file():
+    """Generates stats.json for lazyraion-api to consume."""
+    language_breakdown = {}
+    total_files = 0
+    recent_files = []
+
+    for item in os.listdir('.'):
+        if os.path.isdir(item) and not item.startswith('.'):
+            files = [f for f in os.listdir(item) if os.path.isfile(os.path.join(item, f))]
+            if files:
+                language_breakdown[item] = len(files)
+                total_files += len(files)
+                for f in files:
+                    recent_files.append({"title": f.rsplit('.', 1)[0].replace('_', ' '), "language": item, "file": f"{item}/{f}"})
+
+    stats_payload = {
+        "status": "success",
+        "last_updated": datetime.datetime.utcnow().isoformat() + "Z",
+        "total_solved": total_files,
+        "languages": language_breakdown,
+        "recent_solutions": recent_files[-5:]  # Last 5 solutions
+    }
+
+    with open('stats.json', 'w') as f:
+        json.dump(stats_payload, f, indent=2)
+
+    return stats_payload
+
+def notify_lazyraion_api(payload):
+    """Safely notifies lazyraion-api if server is online. Fails silently if server is down."""
+    if not LAZYRAION_WEBHOOK:
+        return
+    try:
+        requests.post(LAZYRAION_WEBHOOK, json=payload, timeout=5)
+        print("Successfully notified lazyraion-api.")
+    except Exception as e:
+        print(f"lazyraion-api server currently unreachable. Continuing without error: {e}")
+
+def send_telegram(text):
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "Markdown"}
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        print(f"Telegram notification failed: {e}")
+
+def mode_sync():
+    submissions = get_recent_submissions()
+    new_syncs = 0
+
+    for sub in submissions:
+        lang_slug = sub['lang']
+        if lang_slug not in LANG_MAP:
+            continue
+            
+        lang_info = LANG_MAP[lang_slug]
+        code = get_submission_code(sub['id'])
+        if not code:
+            continue
+
+        dt = datetime.datetime.fromtimestamp(int(sub['timestamp']))
+        timestamp_str = dt.strftime("%Y-%m-%d %H:%M:%S")
+
+        folder_name = lang_info['folder']
+        file_name = f"{format_filename(sub['title'])}{lang_info['ext']}"
+        file_path = os.path.join(folder_name, file_name)
+
+        if os.path.exists(file_path):
+            continue
+
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
+        comment = lang_info['comment']
+        header = f"{comment} Problem: {sub['title']}\n{comment} Language: {folder_name}\n{comment} Timestamp: \"{timestamp_str}\"\n\n"
+        
+        with open(file_path, 'w') as f:
+            f.write(header + code)
+            
+        new_syncs += 1
+
+    stats_data = generate_stats_file()
+    notify_lazyraion_api(stats_data)
+
+    if new_syncs > 0:
+        msg = f"⚡ *LeetCode Sync Complete*\n\nAdded `{new_syncs}` new solutions.\nTotal Solved: `{stats_data['total_solved']}`"
+        send_telegram(msg)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode', choices=['sync', 'stats'], default='sync')
+    args = parser.parse_args()
+
+    if args.mode == 'sync':
+        mode_sync()
+    else:
+        stats = generate_stats_file()
+        send_telegram(f"📊 *Current Stats*\nTotal Solved: `{stats['total_solved']}`")
