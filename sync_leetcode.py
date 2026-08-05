@@ -23,13 +23,40 @@ HEADERS = {
 URL = 'https://leetcode.com/graphql'
 
 LANG_MAP = {
-    'java': {'ext': '.java', 'comment': '//', 'folder': 'Java'},
-    'python3': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
-    'python': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
-    'cpp': {'ext': '.cpp', 'comment': '//', 'folder': 'Cpp'},
+    # Core Languages
     'c': {'ext': '.c', 'comment': '//', 'folder': 'C'},
-    'javascript': {'ext': '.js', 'comment': '//', 'folder': 'JavaScript'}
+    'cpp': {'ext': '.cpp', 'comment': '//', 'folder': 'Cpp'},
+    'java': {'ext': '.java', 'comment': '//', 'folder': 'Java'},
+    'python': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'python3': {'ext': '.py', 'comment': '#', 'folder': 'Python'},
+    'pythondata': {'ext': '.py', 'comment': '#', 'folder': 'Pandas'},
+    'csharp': {'ext': '.cs', 'comment': '//', 'folder': 'CSharp'},
+    'javascript': {'ext': '.js', 'comment': '//', 'folder': 'JavaScript'},
+    'typescript': {'ext': '.ts', 'comment': '//', 'folder': 'TypeScript'},
+    'php': {'ext': '.php', 'comment': '//', 'folder': 'PHP'},
+    'swift': {'ext': '.swift', 'comment': '//', 'folder': 'Swift'},
+    'kotlin': {'ext': '.kt', 'comment': '//', 'folder': 'Kotlin'},
+    'dart': {'ext': '.dart', 'comment': '//', 'folder': 'Dart'},
+    'golang': {'ext': '.go', 'comment': '//', 'folder': 'Go'},
+    'ruby': {'ext': '.rb', 'comment': '#', 'folder': 'Ruby'},
+    'scala': {'ext': '.scala', 'comment': '//', 'folder': 'Scala'},
+    'rust': {'ext': '.rs', 'comment': '//', 'folder': 'Rust'},
+    
+    # Functional / Niche Languages
+    'racket': {'ext': '.rkt', 'comment': ';', 'folder': 'Racket'},
+    'erlang': {'ext': '.erl', 'comment': '%', 'folder': 'Erlang'},
+    'elixir': {'ext': '.ex', 'comment': '#', 'folder': 'Elixir'},
+    
+    # Database / SQL Dialects
+    'mysql': {'ext': '.sql', 'comment': '--', 'folder': 'SQL'},
+    'mssql': {'ext': '.sql', 'comment': '--', 'folder': 'SQL'},
+    'oraclesql': {'ext': '.sql', 'comment': '--', 'folder': 'SQL'},
+    'postgresql': {'ext': '.sql', 'comment': '--', 'folder': 'SQL'},
+    
+    # Scripting
+    'bash': {'ext': '.sh', 'comment': '#', 'folder': 'Bash'}
 }
+
 
 def get_problem_number(title_slug):
     """Fetches the exact frontend problem ID from LeetCode."""
