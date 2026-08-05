@@ -1,37 +1,37 @@
 {
   "status": "success",
-  "last_updated": "2026-08-05T09:35:10.572281Z",
-  "total_solved": 19,
+  "last_updated": "2026-08-05T09:47:10.916729Z",
+  "total_solved": 10,
   "languages": {
     "leet": 1,
-    "Python": 17,
+    "Python": 8,
     "Java": 1
   },
   "recent_solutions": [
     {
-      "title": "L342-Powerof4",
+      "title": "0002 Add Two Numbers",
       "language": "Python",
-      "file": "Python/L342-Powerof4.py"
+      "file": "Python/0002_Add_Two_Numbers.py"
     },
     {
-      "title": "Power of Four",
+      "title": "0049 Group Anagrams",
       "language": "Python",
-      "file": "Python/Power_of_Four.py"
+      "file": "Python/0049_Group_Anagrams.py"
     },
     {
-      "title": "Contains Duplicate",
+      "title": "0001 Two Sum",
       "language": "Python",
-      "file": "Python/Contains_Duplicate.py"
+      "file": "Python/0001_Two_Sum.py"
     },
     {
-      "title": "Valid Anagram",
+      "title": "0217 Contains Duplicate",
       "language": "Python",
-      "file": "Python/Valid_Anagram.py"
+      "file": "Python/0217_Contains_Duplicate.py"
     },
     {
-      "title": "Add Two Integers",
+      "title": "2235 Add Two Integers",
       "language": "Java",
-      "file": "Java/Add_Two_Integers.java"
+      "file": "Java/2235_Add_Two_Integers.java"
     }
   ]
 }

@@ -1,0 +1,12 @@
+# Problem: 1. Two Sum
+# Language: Python
+# Timestamp: "2026-02-07 10:11:38"
+
+class Solution(object):
+    def twoSum(self, nums, target):
+        seen = {}
+        for i,num in enumerate(nums):
+            diff=target-num
+            if diff in seen :
+                return [seen[diff],i]
+            seen[num]=i
