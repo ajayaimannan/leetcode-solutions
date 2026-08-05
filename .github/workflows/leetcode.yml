@@ -13,6 +13,8 @@ on:
         options:
           - sync
           - stats
+  repository_dispatch:
+    types: [telegram_command] # This is the missing link that listens to your Telegram bot!
 
 jobs:
   run-engine:
@@ -29,6 +31,17 @@ jobs:
       - name: Install Dependencies
         run: pip install requests
 
+      - name: Determine Mode
+        id: set_mode
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "MODE=${{ github.event.inputs.action_mode }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "MODE=${{ github.event.client_payload.mode }}" >> $GITHUB_OUTPUT
+          else
+            echo "MODE=sync" >> $GITHUB_OUTPUT
+          fi
+
       - name: Execute Sync
         env:
           LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
@@ -36,7 +49,7 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           LAZYRAION_WEBHOOK_URL: ${{ secrets.LAZYRAION_WEBHOOK_URL }}
-        run: python sync_leetcode.py --mode ${{ github.event.inputs.action_mode || 'sync' }}
+        run: python sync_leetcode.py --mode ${{ steps.set_mode.outputs.MODE }}
 
       - name: Commit Code & Stats JSON
         run: |
