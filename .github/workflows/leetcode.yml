@@ -1,34 +1,46 @@
-name: LeetCode Custom Sync
+name: LeetCode Engine
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs automatically once a day at midnight UTC
-  workflow_dispatch: # Allows you to manually click a "Run Workflow" button from your phone
+    - cron: '0 0 * * *' # Daily auto-sync
+  workflow_dispatch:
+    inputs:
+      action_mode:
+        description: 'Execution Mode'
+        required: true
+        default: 'sync'
+        type: choice
+        options:
+          - sync
+          - stats
 
 jobs:
-  sync:
+  run-engine:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          
+
       - name: Install Dependencies
         run: pip install requests
 
-      - name: Run Sync Script
+      - name: Execute Sync
         env:
           LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
           LEETCODE_CSRF: ${{ secrets.LEETCODE_CSRF }}
-        run: python sync_leetcode.py
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          LAZYRAION_WEBHOOK_URL: ${{ secrets.LAZYRAION_WEBHOOK_URL }}
+        run: python sync_leetcode.py --mode ${{ github.event.inputs.action_mode || 'sync' }}
 
-      - name: Commit and Push
+      - name: Commit Code & Stats JSON
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-sync LeetCode solutions" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: sync solutions & update stats.json" && git push)
