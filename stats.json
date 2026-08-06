@@ -1,39 +1,26 @@
 {
   "status": "success",
-  "last_updated": "2026-08-06T01:12:51.881606Z",
-  "total_solved": 12,
-  "languages": {
-    "JavaScript": 1,
-    "leet": 1,
-    "Python": 8,
-    "Java": 1,
-    "Kotlin": 1
+  "last_updated": "2026-08-06T10:19:55.422673Z",
+  "total_solved": 0,
+  "unique_problems": 0,
+  "languages": {},
+  "difficulty": {
+    "Easy": 11,
+    "Medium": 2,
+    "Hard": 0
   },
-  "recent_solutions": [
-    {
-      "title": "0049 Group Anagrams",
-      "language": "Python",
-      "file": "Python/0049_Group_Anagrams.py"
-    },
-    {
-      "title": "0001 Two Sum",
-      "language": "Python",
-      "file": "Python/0001_Two_Sum.py"
-    },
-    {
-      "title": "0217 Contains Duplicate",
-      "language": "Python",
-      "file": "Python/0217_Contains_Duplicate.py"
-    },
-    {
-      "title": "2235 Add Two Integers",
-      "language": "Java",
-      "file": "Java/2235_Add_Two_Integers.java"
-    },
-    {
-      "title": "2235 Add Two Integers",
-      "language": "Kotlin",
-      "file": "Kotlin/2235_Add_Two_Integers.kt"
-    }
-  ]
+  "streak": {
+    "current_streak": 2,
+    "total_active_days": 5
+  },
+  "calendar": {
+    "2026-02-02": 2,
+    "2026-02-04": 3,
+    "2026-02-07": 4,
+    "2026-02-08": 1,
+    "2026-08-05": 9
+  },
+  "recent_solutions": [],
+  "solutions": [],
+  "repo": "https://github.com/izqzb/leetcode-solutions"
 }
