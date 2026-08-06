@@ -13,6 +13,7 @@ on:
         options:
           - sync
           - stats
+          - revision
   repository_dispatch:
     types:
       - telegram_command
@@ -50,6 +51,7 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           LAZYRAION_WEBHOOK_URL: ${{ secrets.LAZYRAION_WEBHOOK_URL }}
+          LEETCODE_WEBHOOK_SECRET: ${{ secrets.LEETCODE_WEBHOOK_SECRET }}
         run: python sync_leetcode.py --mode ${{ steps.set_mode.outputs.MODE }}
 
       - name: Commit Code & Stats JSON
