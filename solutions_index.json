@@ -1,0 +1,125 @@
+{
+  "JavaScript/2235_Add_Two_Integers.js": {
+    "id": "2235",
+    "title": "Add Two Integers",
+    "language": "JavaScript",
+    "difficulty": "Easy",
+    "tags": [
+      "Math"
+    ],
+    "timestamp": "2026-08-05 10:03:54",
+    "file": "JavaScript/2235_Add_Two_Integers.js",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/JavaScript/2235_Add_Two_Integers.js"
+  },
+  "Python/0020_Valid_Parentheses.py": {
+    "id": "20",
+    "title": "Valid Parentheses",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "String",
+      "Stack",
+      "Bracket Sequences"
+    ],
+    "timestamp": "2026-02-08 19:07:38",
+    "file": "Python/0020_Valid_Parentheses.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0020_Valid_Parentheses.py"
+  },
+  "Python/0344_Reverse_String.py": {
+    "id": "344",
+    "title": "Reverse String",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "Two Pointers",
+      "String"
+    ],
+    "timestamp": "2026-02-07 10:35:30",
+    "file": "Python/0344_Reverse_String.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0344_Reverse_String.py"
+  },
+  "Python/0342_Power_of_Four.py": {
+    "id": "342",
+    "title": "Power of Four",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "Math",
+      "Bit Manipulation",
+      "Recursion"
+    ],
+    "timestamp": "2026-02-07 10:25:46",
+    "file": "Python/0342_Power_of_Four.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0342_Power_of_Four.py"
+  },
+  "Python/0049_Group_Anagrams.py": {
+    "id": "49",
+    "title": "Group Anagrams",
+    "language": "Python",
+    "difficulty": "Medium",
+    "tags": [
+      "Array",
+      "Hash Table",
+      "String",
+      "Sorting"
+    ],
+    "timestamp": "2026-02-07 10:20:01",
+    "file": "Python/0049_Group_Anagrams.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0049_Group_Anagrams.py"
+  },
+  "Python/0001_Two_Sum.py": {
+    "id": "1",
+    "title": "Two Sum",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "timestamp": "2026-02-07 10:11:38",
+    "file": "Python/0001_Two_Sum.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0001_Two_Sum.py"
+  },
+  "Python/0002_Add_Two_Numbers.py": {
+    "id": "2",
+    "title": "Add Two Numbers",
+    "language": "Python",
+    "difficulty": "Medium",
+    "tags": [
+      "Linked List",
+      "Math",
+      "Recursion"
+    ],
+    "timestamp": "2026-02-04 07:06:35",
+    "file": "Python/0002_Add_Two_Numbers.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0002_Add_Two_Numbers.py"
+  },
+  "Python/0242_Valid_Anagram.py": {
+    "id": "242",
+    "title": "Valid Anagram",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "Hash Table",
+      "String",
+      "Sorting"
+    ],
+    "timestamp": "2026-02-04 06:53:01",
+    "file": "Python/0242_Valid_Anagram.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0242_Valid_Anagram.py"
+  },
+  "Python/0217_Contains_Duplicate.py": {
+    "id": "217",
+    "title": "Contains Duplicate",
+    "language": "Python",
+    "difficulty": "Easy",
+    "tags": [
+      "Array",
+      "Hash Table",
+      "Sorting"
+    ],
+    "timestamp": "2026-02-02 09:55:04",
+    "file": "Python/0217_Contains_Duplicate.py",
+    "github_url": "https://github.com/izqzb/leetcode-solutions/blob/main/Python/0217_Contains_Duplicate.py"
+  }
+}

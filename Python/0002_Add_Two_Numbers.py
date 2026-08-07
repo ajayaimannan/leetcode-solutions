@@ -1,4 +1,5 @@
 # Problem: 2. Add Two Numbers
+# Difficulty: Medium
 # Language: Python
 # Timestamp: "2026-02-04 07:06:35"
 

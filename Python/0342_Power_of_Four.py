@@ -1,4 +1,5 @@
 # Problem: 342. Power of Four
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-07 10:25:46"
 

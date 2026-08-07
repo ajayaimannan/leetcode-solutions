@@ -1,4 +1,5 @@
 # Problem: 344. Reverse String
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-07 10:35:30"
 

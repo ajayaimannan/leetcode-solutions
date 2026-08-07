@@ -1,4 +1,5 @@
 # Problem: 217. Contains Duplicate
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-02 09:55:04"
 

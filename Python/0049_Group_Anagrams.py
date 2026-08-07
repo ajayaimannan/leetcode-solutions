@@ -1,4 +1,5 @@
 # Problem: 49. Group Anagrams
+# Difficulty: Medium
 # Language: Python
 # Timestamp: "2026-02-07 10:20:01"
 

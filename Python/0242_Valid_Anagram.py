@@ -1,4 +1,5 @@
 # Problem: 242. Valid Anagram
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-04 06:53:01"
 

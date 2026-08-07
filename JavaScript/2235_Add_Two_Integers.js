@@ -1,4 +1,5 @@
 // Problem: 2235. Add Two Integers
+// Difficulty: Easy
 // Language: JavaScript
 // Timestamp: "2026-08-05 10:03:54"
 

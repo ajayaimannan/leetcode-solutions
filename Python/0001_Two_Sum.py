@@ -1,4 +1,5 @@
 # Problem: 1. Two Sum
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-07 10:11:38"
 

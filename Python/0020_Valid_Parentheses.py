@@ -1,4 +1,5 @@
 # Problem: 20. Valid Parentheses
+# Difficulty: Easy
 # Language: Python
 # Timestamp: "2026-02-08 19:07:38"
 
